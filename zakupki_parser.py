@@ -18,7 +18,8 @@ def parse_zakupki(search_query):
         
         # Формируем URL поиска
         encoded_query = urllib.parse.quote_plus(search_query)
-        url = f"https://zakupki.gov.ru/epz/main/public/home.html"
+        url = f"https://zakupki.gov.ru/epz/order/extendedsearch/results.html"
+        #как из урока по логину и паролю
         
         print(f"Открываем: {url}")
         driver.get(url)
@@ -46,7 +47,7 @@ def parse_real_results(html):
     print("Поиск карточек закупок")
     
     # Основные селекторы для карточек закупок
-    cards = soup.find_all('div', class_='registry-entry__form')
+    cards = soup.find_all('div', class_='search-group searchField')
     
     if not cards:
         print("Не найдено карточек закупок")
@@ -82,7 +83,7 @@ def extract_real_data_with_links(card):
         title = title_elem.text.strip() if title_elem else "Название не указано"
         
         # Заказчик
-        customer_elem = card.find('div', class_='registry-entry__body-href')
+        customer_elem = card.find('div', class_="registry-entry__body-href")
         customer = customer_elem.text.strip() if customer_elem else "Заказчик не указан"
         
         # Цена
@@ -90,7 +91,7 @@ def extract_real_data_with_links(card):
         price = price_elem.text.strip() if price_elem else "Цена не указана"
         
         # Статус
-        status_elem = card.find('div', class_='registry-entry__body-mid')
+        status_elem = card.find('div', class_='registry-entry__header-mid__title text-normal')
         status = status_elem.text.strip() if status_elem else "Статус не указан"
         
         # ссылка - ищем ссылку на основную страницу закупки
@@ -100,12 +101,12 @@ def extract_real_data_with_links(card):
         procedure_type = "223-ФЗ" if "223-ФЗ" in card.text else "44-ФЗ"
         
         return {
-            'customer': clean_text(customer),
-            'title': clean_text(title),
-            'price': clean_text(price),
-            'amount': clean_text(price),
+            'customer': customer,
+            'title': title,
+            'price': price,
+            'amount': price,
             'link': link,
-            'status': clean_text(status),
+            'status': status,
             'procedure_type': procedure_type
         }
         
