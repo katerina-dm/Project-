@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Закупки </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1> Мой поиск </h1>
+        
+        <form method="POST" class="search-form">
+            <input type="text" name="search_query" class="search-input" 
+                   placeholder=" Введите запрос " required>
+            <button type="submit" class="search-button"> Найти закупки </button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert-message alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if purchases %}
+            <h2> Найдено закупок: {{ purchases|length }}</h2>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th> Тип процедуры </th>
+                        <th> Заказчик </th>
+                        <th> Название </th>
+                        <th> Цена </th>
+                        <th> Статус </th>
+                        <th> Ссылка </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.procedure_type }}</td>
+                        <td>{{ purchase.customer }}</td>
+                        <td>{{ purchase.title }}</td>
+                        <td>{{ purchase.price }}</td>
+                        <td>{{ purchase.status }}</td>
+                        <td>
+                            {% if purchase.link %}
+                                <a href="{{ purchase.link }}" target="_blank"> Открыть </a>
+                            {% else %}
+                                Нет
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>
