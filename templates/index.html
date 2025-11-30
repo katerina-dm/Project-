@@ -14,6 +14,8 @@
             <button type="submit" class="search-button"> Найти закупки </button>
         </form>
 
+
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
